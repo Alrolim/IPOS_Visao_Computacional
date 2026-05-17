@@ -124,7 +124,6 @@
   />
 
   <RectangleLabels name="label" toName="image" strokeWidth="2">
-    <Label value="person"      background="#999999"/>
     <Label value="Fissura"      background="#FF8C00"/>
     <Label value="Trinca"       background="#CC0000"/>
     <Label value="Destacamento" background="#7B2FBE"/>
