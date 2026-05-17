@@ -1,0 +1,109 @@
+<!--
+  ══════════════════════════════════════════════════════════
+  LABEL STUDIO — AULA: VISÃO COMPUTACIONAL PARA TRINCAS
+  Professora: Adriana Rolim | IPOS Pós-Graduação
+  ══════════════════════════════════════════════════════════
+
+  COMO USAR ESTE TEMPLATE:
+  1. Abra o Label Studio: http://localhost:8080
+  2. Crie um projeto: "Create Project"
+  3. Vá em Settings → Labeling Interface → Code
+  4. Cole este XML e salve
+
+  O QUE VOCÊ VAI PRATICAR:
+  ┌──────────────────────────────────────────────────────┐
+  │  📦  RectangleLabels  →  bounding box (YOLO-detect) │
+  │  🔷  PolygonLabels    →  contorno (YOLO-seg)        │
+  │  🖌️  BrushLabels      →  máscara pixel a pixel (U-Net) │
+  └──────────────────────────────────────────────────────┘
+  ══════════════════════════════════════════════════════════
+-->
+
+<View>
+
+  <!-- ── TÍTULO DA TAREFA ── -->
+  <Header value="🔍 Detecção de Manifestações Patológicas — Prática de Anotação"/>
+
+  <!-- ── IMAGEM COM CONTROLES DE NAVEGAÇÃO ── -->
+  <Image
+    name="image"
+    value="$image"
+    zoom="true"
+    zoomControl="true"
+    brightnessControl="true"
+    contrastControl="true"
+    crosshair="true"
+  />
+
+  <!-- ════════════════════════════════════════════════════
+       PARTE 1 — BOUNDING BOX (Detecção com YOLO)
+       ════════════════════════════════════════════════════
+       Como usar: clique e arraste para criar um retângulo
+       ao redor do defeito. Um retângulo por ocorrência.
+  -->
+  <Header value="📦 Parte 1 — Bounding Box (Detecção YOLO)"/>
+  <Text value="Clique e arraste para criar um retângulo ao redor de cada defeito. Use um retângulo por ocorrência."/>
+
+  <RectangleLabels name="bbox" toName="image" strokeWidth="2">
+    <Label value="Fissura"           background="#FF8C00" alias="fissura"/>
+    <Label value="Trinca"            background="#CC0000" alias="trinca"/>
+    <Label value="Destacamento"      background="#7B2FBE" alias="destacamento"/>
+    <Label value="Infiltração"       background="#1565C0" alias="infiltracao"/>
+  </RectangleLabels>
+
+  <!-- ════════════════════════════════════════════════════
+       PARTE 2 — POLÍGONO (Segmentação de instâncias YOLO-seg)
+       ════════════════════════════════════════════════════
+       Como usar: clique nos vértices ao redor do defeito
+       e feche o polígono clicando no primeiro ponto.
+       Ideal para defeitos com forma irregular.
+  -->
+  <Header value="🔷 Parte 2 — Polígono (Segmentação YOLO-seg)"/>
+  <Text value="Clique nos vértices ao redor do defeito e feche o polígono no primeiro ponto. Melhor que o retângulo para defeitos com forma irregular."/>
+
+  <PolygonLabels name="poly" toName="image" strokeWidth="2" pointSize="small" opacity="0.4">
+    <Label value="Fissura"           background="#FF8C00" alias="p_fissura"/>
+    <Label value="Trinca"            background="#CC0000" alias="p_trinca"/>
+    <Label value="Destacamento"      background="#7B2FBE" alias="p_destacamento"/>
+    <Label value="Infiltração"       background="#1565C0" alias="p_infiltracao"/>
+  </PolygonLabels>
+
+  <!-- ════════════════════════════════════════════════════
+       PARTE 3 — PINCEL / BRUSH (Segmentação para U-Net)
+       ════════════════════════════════════════════════════
+       Como usar: selecione a classe, ajuste o tamanho do
+       pincel e pinte toda a área do defeito.
+  -->
+  <Header value="🖌️ Parte 3 — Pincel / Brush (Segmentação U-Net)"/>
+  <Text value="Selecione a classe e pinte toda a extensão do defeito. Use Ctrl+Z para desfazer. Ajuste o tamanho do pincel conforme necessário."/>
+
+  <BrushLabels name="brush" toName="image" strokeWidth="5" opacity="0.6">
+    <Label value="Fissura"           background="#FF8C00" alias="b_fissura"/>
+    <Label value="Trinca"            background="#CC0000" alias="b_trinca"/>
+    <Label value="Destacamento"      background="#7B2FBE" alias="b_destacamento"/>
+    <Label value="Infiltração"       background="#1565C0" alias="b_infiltracao"/>
+  </BrushLabels>
+
+  <!-- ════════════════════════════════════════════════════
+       CLASSIFICAÇÃO RÁPIDA DA IMAGEM
+  -->
+  <Header value="📋 Classificação da Imagem"/>
+
+  <Choices name="severidade" toName="image" choice="single" showInline="true">
+    <Choice value="🟢 Sem defeito visível"          alias="ok"/>
+    <Choice value="🟡 Defeito leve — monitorar"     alias="leve"/>
+    <Choice value="🔴 Defeito grave — intervir"     alias="grave"/>
+  </Choices>
+
+  <!-- Campo de observação -->
+  <Header value="Observações"/>
+  <TextArea
+    name="obs"
+    toName="image"
+    placeholder="Ex.: trinca longitudinal de ~50 cm, possivelmente ativa."
+    rows="2"
+    editable="true"
+    maxSubmissions="1"
+  />
+
+</View>
